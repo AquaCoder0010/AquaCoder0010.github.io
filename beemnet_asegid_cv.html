@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Beemnet Asegid — CV</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --muted: #555;
+    --light: #888;
+    --rule: #d8d5cf;
+    --accent: #1a472a;
+    --accent-soft: #e6f2ec;
+    --page: #fff;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: #f0ede7;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  /* ── PRINT BUTTON BAR ── */
+  .print-bar {
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem max(2rem, 5vw);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .print-bar span { opacity: 0.7; }
+  .print-btn {
+    background: #fff;
+    color: var(--accent);
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 1rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: opacity 0.2s;
+  }
+  .print-btn:hover { opacity: 0.85; }
+
+  /* ── PAGE SHELL ── */
+  .page {
+    background: var(--page);
+    max-width: 780px;
+    margin: 2rem auto;
+    padding: 3rem 3.5rem;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+  }
+
+  /* ── HEADER ── */
+  .cv-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 1.75rem;
+  }
+  .cv-header h1 {
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+    color: var(--ink);
+  }
+  .cv-header .title-line {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .contact-col {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 2;
+    color: var(--muted);
+  }
+  .contact-col a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── SECTION ── */
+  .cv-section {
+    margin-bottom: 1.75rem;
+  }
+  .cv-section-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  /* ── SUMMARY ── */
+  .summary {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    padding: 0.75rem 1rem;
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ── SKILLS TABLE ── */
+  .skills-table {
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+  }
+  .skills-table td {
+    padding: 0.35rem 0;
+    vertical-align: top;
+  }
+  .skills-table td:first-child {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--light);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    width: 140px;
+    padding-top: 0.45rem;
+  }
+  .skills-table tr { border-bottom: 1px solid var(--rule); }
+  .skills-table tr:last-child { border-bottom: none; }
+
+  /* ── PROJECT ENTRIES ── */
+  .cv-entry {
+    margin-bottom: 1.25rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--rule);
+    position: relative;
+  }
+  .cv-entry::before {
+    content: '';
+    position: absolute;
+    left: -4.5px;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .cv-entry-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.1rem;
+  }
+  .cv-entry h3 {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .cv-entry .when {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cv-entry .org {
+    font-size: 12px;
+    color: var(--light);
+    margin-bottom: 0.45rem;
+  }
+  .cv-entry ul {
+    list-style: none;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .cv-entry ul li {
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.2rem;
+    line-height: 1.6;
+  }
+  .cv-entry ul li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .edu-row .edu-left h3 { font-weight: 500; font-size: 13.5px; }
+  .edu-row .edu-left p { font-size: 12px; color: var(--muted); }
+  .edu-row .edu-right {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--light);
+    text-align: right;
+  }
+
+  /* ── FOOTER ── */
+  .cv-footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--light);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .print-bar { display: none; }
+    .page {
+      box-shadow: none;
+      margin: 0;
+      padding: 1.5cm 2cm;
+      max-width: 100%;
+    }
+    .cv-entry { break-inside: avoid; }
+    .cv-section { break-inside: avoid; }
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 1.5rem; margin: 0; }
+    .cv-header { grid-template-columns: 1fr; }
+    .contact-col { text-align: left; }
+    .edu-row { flex-direction: column; gap: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-bar">
+  <span>beemnet_asegid_cv.html — save as PDF via File → Print → Save as PDF</span>
+  <button class="print-btn" onclick="window.print()">Print / Save as PDF ↓</button>
+</div>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <div class="cv-header">
+    <div>
+      <p class="title-line">ML / AI Engineer &nbsp;·&nbsp; Systems Programmer</p>
+      <h1>Beemnet Asegid</h1>
+    </div>
+    <div class="contact-col">
+      <div>beemnetasegid123@gmail.com</div>
+      <div><a href="https://github.com/AquaCoder0010">github.com/AquaCoder0010</a></div>
+      <div>Addis Ababa, Ethiopia</div>
+    </div>
+  </div>
+
+  <!-- ── SUMMARY ── -->
+  <div class="cv-section">
+    <p class="cv-section-title">Profile</p>
+    <p class="summary">
+      Hello, My name is Beemnet and I am a programmer with a passion for understanding and building software from the ground up.
+      Experienced in deep learning research (GANs, transformers, ANN from scratch), computer vision,
+      binary analysis, and systems programming in C++. I am capable of bridging the gap between ML theory and
+      low-level implementation.
+    </p>
+  </div>
+
+  <!-- ── SKILLS ── -->
+  <div class="cv-section">
+    <p class="cv-section-title">Technical Skills</p>
+    <table class="skills-table">
+      <tr>
+        <td>Languages</td>
+        <td>Python, C++, C</td>
+      </tr>
+      <tr>
+        <td>ML / Deep Learning</td>
+        <td>PyTorch, GANs (CBiGAN), Transformers (ByteFormer), backpropagation, gradient descent</td>
+      </tr>
+      <tr>
+        <td>Data / Vision</td>
+        <td>NumPy, Pandas, Matplotlib, scikit-learn, OpenCV, binary image processing</td>
+      </tr>
+      <tr>
+        <td>Systems</td>
+        <td>SFML, PE binary analysis, multithreading, OMR pipelines, fuzzy inference systems</td>
+      </tr>
+      <tr>
+        <td>Tools</td>
+        <td>Git,PyPI packaging, VS Code, Emacs</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ── PROJECTS ── -->
+  <div class="cv-section">
+    <p class="cv-section-title">Projects</p>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>Osage-SAMD — Signature Agnostic Malware Detection</h3>
+        <span class="when">Python · GAN · Unsupervised</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/Osage-SAMD</p>
+      <ul>
+        <li>Implemented a Consistent Bidirectional GAN (CBiGAN) for unsupervised anomaly detection on 512×512 malware binary images</li>
+        <li>Model trained exclusively on benign data; detects malware via reconstruction failure and feature discrepancy</li>
+        <li>Achieved peak AUC of 0.82 on the DikeDataset, using the SABV package for binary-to-image conversion</li>
+      </ul>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>OsageLOM — ByteFormer Malware Classifier</h3>
+        <span class="when">Python · Transformer</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/OsageLOM</p>
+      <ul>
+        <li>Built a transformer-based (ByteFormer) binary classifier operating on raw byte sequences from PE executable sections</li>
+        <li>Input: raw bytes from .text and .code sections; output: malware / benign classification</li>
+      </ul>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>SABV — Signature Agnostic Binary Visualizer</h3>
+        <span class="when">Python · PyPI</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/SABV</p>
+      <ul>
+        <li>Built and published a PE/binary-to-image converter on PyPI for malware visual analysis</li>
+        <li>Integrates an optional fuzzy-inference system (FIS) based on the SAGMAD research paper</li>
+      </ul>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>OPAL-OMR — Optical Mark Recognition System</h3>
+        <span class="when">C++ · Computer Vision</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/OPAL-OMR</p>
+      <ul>
+        <li>Developed an automated OMR system in C++ to evaluate 12th-grade national exam answer sheets</li>
+        <li>Applied image processing techniques for filled-bubble detection and automated score computation</li>
+      </ul>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>ANN — Artificial Neural Network (from scratch)</h3>
+        <span class="when">C++ · Deep Learning</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/ANN-Artifical-Neural-network</p>
+      <ul>
+        <li>Implemented a full ANN in C++ with no ML libraries — forward pass, backpropagation, and gradient descent</li>
+        <li>Built to develop deep understanding of neural network internals beyond framework abstractions</li>
+      </ul>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>Linear Regression (from scratch)</h3>
+        <span class="when">Python · ML Fundamentals</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/Linear-regression</p>
+      <ul>
+        <li>Pure Python implementation of linear regression including gradient descent and loss tracking</li>
+      </ul>
+    </div>
+
+    <div class="cv-entry">
+      <div class="cv-entry-header">
+        <h3>Dino Game — SFML</h3>
+        <span class="when">C++ · Game Dev</span>
+      </div>
+      <p class="org">github.com/AquaCoder0010/Dino-Game-SFML</p>
+      <ul>
+        <li>Chrome dinosaur game clone in C++ with SFML — real-time game loop, collision detection, procedural obstacles</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ── EDUCATION ── -->
+  <div class="cv-section">
+	<p class="cv-section-title">Education</p>
+
+	<div class="edu-row" style="margin-bottom: 1rem;">
+      <div class="edu-left">
+		<h3>BSc Computer Science, 2nd Year</h3>
+		<p>Addis Ababa University College Of Natural And Computational Science</p>
+      </div>
+      <div class="edu-right">
+		<div>Expected 2028</div>
+      </div>
+	</div>
+
+	<div class="edu-row">
+      <div class="edu-left">
+		<h3>High School Diploma</h3>
+		<p>Beteseb Academy</p>
+      </div>
+      <div class="edu-right">
+		<div>2024</div>
+      </div>
+	</div>
+  </div>
+  <!-- ── FOOTER ── -->
+  <div class="cv-footer">
+    <span>Beemnet Asegid</span>
+    <span>github.com/AquaCoder0010</span>
+  </div>
+
+</div>
+</body>
+</html>
