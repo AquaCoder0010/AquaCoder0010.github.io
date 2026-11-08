@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <rect width="160" height="160" fill="#d9d9d9"/>
+  <rect x="1" y="1" width="158" height="158" fill="none" stroke="#9e9e9e" stroke-width="2"/>
+  <text x="80" y="76" font-family="Verdana, Helvetica, sans-serif" font-size="12" fill="#666666" text-anchor="middle">placeholder</text>
+  <text x="80" y="94" font-family="Verdana, Helvetica, sans-serif" font-size="11" fill="#888888" text-anchor="middle">160 x 160</text>
+</svg>

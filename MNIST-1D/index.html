@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Implementing MNIST-1D without pytorch cause I like
+pain</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" type="text/css" href="../stylesheet.css">
+            <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      /* CSS for citations */
+      div.csl-bib-body { }
+      div.csl-entry {
+        clear: both;
+      }
+      .hanging-indent div.csl-entry {
+        margin-left:2em;
+        text-indent:-2em;
+      }
+      div.csl-left-margin {
+        min-width:2em;
+        float:left;
+      }
+      div.csl-right-inline {
+        margin-left:2em;
+        padding-left:1em;
+      }
+      div.csl-indent {
+        margin-left: 2em;
+      }    </style>
+            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var mathElements = document.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      });
+    </script>
+      </head>
+
+  <body>
+        <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+      <tr style="padding:0px">
+        <td style="padding:0px">
+
+                    <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr style="padding:0px">
+              <td style="padding:2.5%;width:100%;vertical-align:middle">
+                <p class="name" style="text-align: center;">
+                  Implementing MNIST-1D without pytorch cause I like
+                  pain
+                </p>
+                                              </td>
+            </tr>
+          </tbody></table>
+          
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+              <td style="padding:16px;width:100%;vertical-align:middle">
+                <h1 id="introduction">Introduction</h1>
+                <p>This is a deep dive analysis of how I trained a
+                simple Feed Forward model to classify the MNIST-1D <span
+                class="citation" data-cites="greydanus2024scaling">(<a
+                href="#ref-greydanus2024scaling"
+                role="doc-biblioref">Greydanus and Kobak
+                2024</a>)</span> dataset without using pytorch. Just
+                numpy.</p>
+                <h2 id="what-exactly-is-the-mnist-1d-dataset">What
+                exactly is the MNIST-1D dataset ?</h2>
+                <p>Of course any person who have done any sort of AI/ML
+                has got to know of the iconic MNIST (Modified National
+                Institute of Standards and Technology) dataset <span
+                class="citation" data-cites="mnist">(<a
+                href="#ref-mnist" role="doc-biblioref">LeCun, Cortes,
+                and Burges, n.d.</a>)</span>, a collection of
+                handwritten images with labels. It is often thought as
+                the “hello world” equivalent of Machine Learning.</p>
+                <p>What makes the MNIST-1D different however is that
+                instead of classifying 2 dimensional images (with size
+                of 28x28), it classifies a flattened 40 dimensional
+                vector</p>
+                <figure>
+                <img src="images/mnist-images.png" style="width:70.0%"
+                alt="The above row contains the templates, and the bottom contains an example of the MNIST-1D dataset. Consult the research paper if you are curious on how the data generation actually works (basically I am too lazy to explain it)" />
+                <figcaption aria-hidden="true">The above row contains
+                the templates, and the bottom contains an example of the
+                MNIST-1D dataset. Consult the research paper if you are
+                curious on how the data generation actually works
+                (basically I am too lazy to explain it)</figcaption>
+                </figure>
+                <p>Another interesting property of the MNIST-1D dataset
+                is that it helps to differentiate if the model has
+                spatial inductive bias, if it generalizes to new data,
+                and if it is either a linear or non-linear model.</p>
+                <h2 id="simple-model-description">Simple Model
+                description</h2>
+                <p>Of course, since the MNIST dataset input <span
+                class="math inline">x_i</span> and the dataset output
+                <span class="math inline">y_i</span> from the dataset
+                <span class="math inline">I = \{x_i,
+                y_i\}_{i=1}^N</span> are of size 40 and 10 respectively,
+                we need a <em>function</em> that is capable of taking
+                said inputs and outputs.</p>
+                <p>Lets define the model as <span
+                class="math inline">f[x, \phi]</span> where it takes in
+                a vector <span class="math inline">x</span> with
+                parameters <span class="math inline">\phi</span>.</p>
+                <p>One way of modeling such a function is through a
+                Neural network or a MLP (Multi Layered Perceptron).
+                Visually it looks as follows:</p>
+                <figure>
+                <img src="images/nn_diagram.png" style="width:70.0%"
+                alt="A simple visualization of a Fully Connected Neural Network" />
+                <figcaption aria-hidden="true">A simple visualization of
+                a Fully Connected Neural Network</figcaption>
+                </figure>
+                <p>The above diagram can be modeled through the
+                following operations:</p>
+                <p><span class="math display">f_0 = W_0 X_0 + B_0</span>
+                <span class="math display">h_1 = a(f_0)</span> <span
+                class="math display">f_1 = W_1 h_1 + B_1</span> <span
+                class="math display">h_2 = a(f_2)</span> <span
+                class="math display">f_2 = W_2 h_2 + B_2</span></p>
+                <p>Where <span class="math inline">W_0 \in
+                \mathbb{R}^{100 \times 40}, B_0 \in \mathbb{R}^{100},
+                W_1 \in \mathbb{R}^{100 \times 100}, B_1 \in
+                \mathbb{R}^{100 \times 1}, W_2 \in \mathbb{R}^{10 \times
+                100}, B_2 \in \mathbb{R}^{10}</span> and the function
+                <span class="math inline">a(\mathbf{x})</span> is a ReLU
+                function.</p>
+                <p>Of course prior to training the parameters <span
+                class="math inline">\phi</span> given from a FCN, one
+                must have a “criteria” or conventionally a function that
+                describes how well it fits the dataset <span
+                class="math inline">I</span>. Said criterion is called a
+                <em>loss</em> function.</p>
+                <h1 id="but-what-exactly-is-a-loss-function">But, What
+                exactly is a loss function ?</h1>
+                <p>A loss function, is as stated prior, a reliable
+                indicator of how well the model fits with the dataset.
+                Now of course finding said function is the part that is
+                tricky. For instance, one might naively assume that just
+                summing up the absolute difference i.e : <span
+                class="math inline">\sum_{i=1}^N |y_i - f[x_i,
+                \phi]|</span> might give, in the case of a regression
+                task, a reliable indicator of how well it fits. However,
+                one might ask why did I use the absolute value and not
+                the squared of their difference ? or instead of it being
+                the squared difference, it is instead the difference
+                with the power of <span class="math inline">2k</span>,
+                where <span class="math inline">k \in \{1, 2, \ldots,
+                \infty \}</span>. Amongst all different possible forms
+                of loss functions, which one is the <em>best</em> ?</p>
+                <p>Lets shift the perspective entirely and re-word the
+                entire problem. The problem here is that we need to find
+                the accurate parameters <span
+                class="math inline">\phi</span> for the model <span
+                class="math inline">f</span> given the dataset <span
+                class="math inline">I</span>. If we treat the samples
+                <span class="math inline">I</span> as being random
+                variables <span class="math inline">X, Y</span> sampled
+                from a probability distributions <span
+                class="math inline">P \in P_n</span> (where <span
+                class="math inline">P_n</span> is the set containing all
+                different families of probability distributions) and
+                what we need to find is the following distribution:</p>
+                <p><span class="math display">P(Y_1, Y_2, \ldots Y_n
+                \mid X_1, X_2, \ldots X_n)</span></p>
+                <p>Of course we can further refine this distribution by
+                replacing the random variables <span
+                class="math inline">X</span> with the
+                <em>function’s</em> output given <span
+                class="math inline">X</span> with the parameters <span
+                class="math inline">\phi</span>, Meaning:</p>
+                <p><span class="math display">P(Y_1, Y_2, \ldots Y_n
+                \mid f[x_1, \phi], f[x_2, \phi], \ldots f[x_n,
+                \phi])</span></p>
+                <p>is the probability distribution that best describes
+                the samples from the dataset.</p>
+                <p>However, finding the probability distribution is the
+                tricky party. Since the probability distribution is
+                dependent on the parameter <span
+                class="math inline">\phi</span>. We do this with the
+                <em>likelihood function</em></p>
+                <p>A likelihood function is a function that basically
+                represents how likely the parameter <span
+                class="math inline">\phi</span> best represents the
+                probability distribution. Which funnily enough is the
+                exact thing we need and described as a loss function.
+                So, finding the probability distribution’s likelihood
+                function is equivalent to finding the <em>best</em> loss
+                function (provided that the probability distribution’s
+                family <span class="math inline">P_n</span> is the
+                correct one we chose).</p>
+                <p>The likelihood function is, by treating the phi as
+                the input, as follows:</p>
+                <p><span class="math display">L(\phi) = P(Y_1, Y_2,
+                \ldots Y_n \mid f[x_1, \phi], f[x_2, \phi], \ldots
+                f[x_n, \phi])</span></p>
+                <p>Hence, finding the parameter <span
+                class="math inline">\phi</span> that maximizes this
+                function is the distribution we seek</p>
+                <p><span class="math display">\hat{\phi} =
+                \operatorname{argmax}_\phi [P(Y_1, Y_2, \ldots Y_n \mid
+                f[x_1, \phi], f[x_2, \phi], \ldots f[x_n,
+                \phi])]</span></p>
+                <p>if we also operate under the assumption that the
+                dataset is i.i.d (independent and identically
+                distributed <a href="#fn1" class="footnote-ref"
+                id="fnref1" role="doc-noteref"><sup>1</sup></a>),
+                then:</p>
+                <p><span class="math display">\hat{\phi} =
+                \operatorname{argmax}_\phi \left[ \prod_{i=1}^N P(Y_i
+                \mid f[x_i, \phi]) \right]</span></p>
+                <p>However the theoretical formulation of the likelihood
+                function may seem un-intuitive, so lets start with a
+                simpler explanation</p>
+                <p>Lets assume that we have samples <span
+                class="math inline">Y = \{1, 1, 1\}</span> taken from an
+                Bernoulli distribution sampled 3 times. Assume that the
+                trials are i.i.d. So the Likelihood function for the
+                probability distribution <span
+                class="math inline">P(1,1,1 \mid p)</span>:</p>
+                <p><span class="math display">L(p \mid x) = P(1,1,1 \mid
+                p) = p(1 \mid p) p(1 \mid p) p(1 \mid p) = (1-p)^0 p
+                \cdot (1-p)^0 p \cdot (1-p)^0 p = p^3</span></p>
+                <p>When we plot the likelihood function:</p>
+                <figure>
+                <img src="images/plot_uwu.png" style="width:50.0%"
+                alt="Plotting the humble p^3" />
+                <figcaption aria-hidden="true">Plotting the humble <span
+                class="math inline">p^3</span></figcaption>
+                </figure>
+                <p>From here we can infer that by taking <span
+                class="math inline">p=1</span>, we maximize the
+                likelihood function and find the parameters</p>
+                <p>If we do increase the size of the dataset, then the
+                maximum parameter that is found from the likelihood
+                function is closer to the <em>true</em> parameter that
+                describes the distribution. You can see this being true
+                through the following python code:</p>
+                <div class="sourceCode" id="cb1"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clamp(value, min_value, max_value):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">max</span>(min_value, <span class="bu">min</span>(value, max_value))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="bu">int</span>(<span class="bu">input</span>(<span class="st">&quot;enter sample size, I recommend 67, but doing 67 product operations is not funny, so just pick 10 : &quot;</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># for reference please look at : https://imgflip.com/i/ay4gvb</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> N <span class="op">==</span> <span class="dv">67</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;How cute&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> N <span class="op">==</span> <span class="dv">10</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Good Entity&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> clamp(N, <span class="dv">2</span>, <span class="dv">20</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># this is the one we intend to predict</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>true_p <span class="op">=</span> np.random.uniform(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># from this number of samples</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> np.random.binomial(n<span class="op">=</span><span class="dv">1</span>, p<span class="op">=</span>true_p, size<span class="op">=</span>N)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>likelihood_p <span class="op">=</span> <span class="bu">max</span>([(<span class="dv">1</span><span class="op">-</span><span class="bu">float</span>(p))<span class="op">**</span>(<span class="bu">len</span>(samples) <span class="op">-</span> np.<span class="bu">sum</span>(samples)) <span class="op">*</span> <span class="bu">float</span>(p)<span class="op">**</span>(np.<span class="bu">sum</span>(samples)) <span class="cf">for</span> p <span class="kw">in</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>)])</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(likelihood_p, true_p)</span></code></pre></div>
+                <p>However, if we do increase the size of the dataset,
+                we come across another problem. That being the products
+                of the parameters continually become smaller and
+                smaller.</p>
+                <p>While the theoretical assumptions of the likelihood
+                function are sound, it becomes computationally
+                infeasible. The reason being, finding the parameter
+                <span class="math inline">\hat{\phi}</span> becomes
+                harder as the function’s range become closer and closer
+                to zero.</p>
+                <figure>
+                <img src="images/size_big_bad.png" style="width:90.0%"
+                alt="As the size of the dataset increase, the maximum parameter L(\hat{\phi}) becomes smaller and smaller." />
+                <figcaption aria-hidden="true">As the size of the
+                dataset increase, the maximum parameter <span
+                class="math inline">L(\hat{\phi})</span> becomes smaller
+                and smaller.</figcaption>
+                </figure>
+                <p>To solve this, all we need to do is to compose this
+                by a function that <em>preserves</em> the position of
+                <span class="math inline">l(\hat{\phi})</span> while
+                making it easier to compare. Such functions that satisfy
+                said criteria are called <em>monotonic</em>
+                functions.</p>
+                <p>One example of a monotonic function is the log
+                function. Let <span class="math inline">g(x) =
+                \log(x)</span> and since <span
+                class="math inline">g</span> is a monotonic
+                function:</p>
+                <p><span class="math display">\hat{\phi} =
+                \operatorname{argmax}_\phi [l(\phi)] \Rightarrow
+                \hat{\phi} = \operatorname{argmax}_\phi
+                [g(l(\phi))]</span></p>
+                <p>We can also reformulate the equation to minimize the
+                loss function as opposed to maximizing it by multiplying
+                it with <span class="math inline">-1</span>. Hence:</p>
+                <p><span class="math display">\hat{\phi} =
+                -\operatorname{argmin}_\phi [\log(l(\phi))]</span> <span
+                class="math display">\hat{\phi} =
+                -\operatorname{argmin}_\phi \left[
+                \log\left(\prod_{i=1}^N P(Y_i \mid f[x_i, \phi])\right)
+                \right]</span> <span class="math display">\hat{\phi} =
+                -\operatorname{argmin}_\phi \left[ \sum_{i=1}^N
+                \log\left(P(Y_i \mid f[x_i, \phi])\right)
+                \right]</span></p>
+                <p>The above formulation is theoretically equivalent to
+                the likelihood function stated prior and solves the
+                issue of smaller values (since log of a value that is
+                between 0 and 1 returns a huge negative number, and its
+                value being multiped by <span
+                class="math inline">-1</span> makes it a huge positive
+                number ) The reason we chose <span
+                class="math inline">\log</span> compared to other
+                functions is that it makes it easier to compute the
+                product of the probability distributions by the
+                following property: <span class="math inline">f(a b) =
+                f(a) + f(b)</span></p>
+                <figure>
+                <img src="images/modified_image.png" style="width:90.0%"
+                alt="The same loss function but modified for the log likelihood. The function structure is the same but the points (the minimum points in this case) are equivalent. Which is what we need in the end." />
+                <figcaption aria-hidden="true">The same loss function
+                but modified for the log likelihood. The function
+                structure is the same but the points (the minimum points
+                in this case) are equivalent. Which is what we need in
+                the end.</figcaption>
+                </figure>
+                <p>The final thing we need to do is to find the family
+                of the probability distribution <span
+                class="math inline">P \in P_n</span> that satisfies the
+                constraints of the dataset <span
+                class="math inline">I</span>.</p>
+                <p>Since <span class="math inline">Y_i</span> is a
+                discrete sample (i.e, the range of its values is a
+                countably finite set of <span class="math inline">\{1,
+                2, \ldots 10\}</span>) and since <span
+                class="math inline">X_i</span> is a multivariate
+                continuous random variable. We need a probability
+                distribution <span class="math inline">P</span>, that
+                takes in <span class="math inline">P(Y_i)</span>.</p>
+                <p>We can do this by making <span
+                class="math inline">P</span> a multi class probability
+                distribution, where <span class="math inline">P(Y_i \mid
+                \lambda) = \lambda_k</span> and <span
+                class="math inline">\sum_{k&#39;}^K \lambda_{k&#39;} =
+                1</span>. Meaning we would need to change the outputs
+                <span class="math inline">f_{2,k}</span> into a valid
+                lambda parameter.</p>
+                <p>Such constraint can be fulfilled through the
+                “softmax” function. The softmax function is defined
+                as:</p>
+                <p><span
+                class="math display">\operatorname{softmax}_k(F) =
+                \frac{e^{F_k}}{\sum_{k&#39;}^K e^{F_{k}}}</span></p>
+                <p>where the input <span class="math inline">F \in
+                \mathbb{R}^B, B \in \{2, 3, \ldots \}</span> or F is a
+                vector.</p>
+                <p>In this case, F is often called <em>logits</em>. In
+                the case of our model, they are the 10 dimensional
+                vector we get in the end.</p>
+                <p>Hence the negative log likelihood function is:</p>
+                <p><span class="math display">L(\phi) = -\sum_{i=1}^N
+                \log(\operatorname{softmax}_{y_i}(f[x_i,
+                \phi]))</span></p>
+                <p>Now that we do have the valid and best criterion for
+                the MNIST-1D dataset. We need to find the the optimal
+                parameters.</p>
+                <h1 id="finding-the-optimal-hatphi">Finding the optimal
+                <span class="math inline">\hat{\phi}</span></h1>
+                <p>Now, we have the data, the loss function we seek to
+                optimize, and the function (written not in order). Now
+                the question is, how do we find <span
+                class="math inline">\hat{\phi}</span> ?</p>
+                <p>Since <span class="math inline">\hat{\phi} =
+                -\operatorname{argmin}_\phi \left[ \sum_{i=1}^N
+                \log\left(P(Y_i \mid f[x_i, \phi])\right)
+                \right]</span>, one naive solution is to just find <span
+                class="math inline">L&#39;(\phi)</span>, then evaluate
+                <span class="math inline">L(\hat{\phi}) = 0</span> to
+                find <span class="math inline">\hat{\phi}</span>.</p>
+                <p>Alright lets start by doing that, is what I would
+                have said if I was a filthy math masochist. No I am not,
+                and finding <span class="math inline">40 \times 100 +
+                100 \times 100 + 100 \times 10 = 15000</span>
+                parameter’s partial derivatives by hand is not a good
+                idea.</p>
+                <p>Of course it is possible to find said derivatives
+                computationally, but even that doesn’t give us the
+                closed form solution. There are two reasons for this,
+                the first being the non linearity of the model. As the
+                model’s size increase , with it’s composition of ReLU
+                functions and the softmax function, it’s non-linearity
+                becomes more complex than a polynomial with degree
+                greater than 5. This distinction is important, since it
+                is impossible to find a degree 5 polynomial’s roots in a
+                closed form (see Abel–Ruffini theorem <span
+                class="citation" data-cites="wikipedia_abel_ruffini">(<a
+                href="#ref-wikipedia_abel_ruffini"
+                role="doc-biblioref">contributors, n.d.</a>)</span> for
+                more info), and since the function <span
+                class="math inline">L&#39;(\phi)</span> is more complex
+                than a 1-Dimensional polynomial, it is hard to find a
+                closed form solution.</p>
+                <p>The second is when we took the derivative of the loss
+                function and evaluated it at <span
+                class="math inline">0</span>, we assumed that the loss
+                function is <em>convex</em>. A convex function has only
+                one minimizer (or maximizer but it doesn’t concern us).
+                However the loss function <span
+                class="math inline">L(\phi)</span> for our model is not
+                necessarily <em>convex</em>. One can prove if a given
+                model is complex or not by getting their
+                <em>Hessian</em> matrix’s eigenvalues.</p>
+                <p>The <em>Hessian</em> matrix is the matrix that
+                contains the given function’s second order partial
+                derivatives. While the <em>Jacobian</em> is the
+                function’s first order partial derivatives.</p>
+                <p>I don’t quite understand how the eigenvalues
+                correlate to convexity. Hopefully once I do, it becomes
+                something I will dedicate an entire explanation for. but
+                for now one can use it to deduce if a given model’s loss
+                function is <em>convex</em> or not.</p>
+                <p>There are some problems, for instance <em>linear
+                regression</em>, where the model is linear and is
+                convex. For such cases closed forms do exist. See <span
+                class="citation"
+                data-cites="linear_regression_closed_form">(<a
+                href="#ref-linear_regression_closed_form"
+                role="doc-biblioref">Hatcher 2022</a>)</span> for more
+                details.</p>
+                <p>So since closed form solutions are infeasible for our
+                FCN, we use another method, which is using a technique
+                called <em>gradient descent</em>.</p>
+                <h1 id="gradient-descent">Gradient Descent</h1>
+                <p><em>Gradient descent</em> is a way of finding <span
+                class="math inline">\hat{\phi}</span> through the use of
+                the gradients evaluated at a random <span
+                class="math inline">\phi_r</span>. We know that taking
+                the gradient gives us the slope at that point. By making
+                use of the slope, we can move our current parameter
+                vector <span class="math inline">\phi_t</span> to
+                another point in the parameter space <span
+                class="math inline">\phi_{t+1}</span>. Where every
+                iteration hopefully goes closer and closer to <span
+                class="math inline">\hat{\phi}</span> Hence we can
+                formulate it as follows:</p>
+                <p><span class="math display">\phi_{t+1} \to \phi_t -
+                \frac{\partial L}{\partial \phi_t}</span></p>
+                <p>but of course just subtracting the partial derivative
+                is not a good idea, to show why, lets start with a
+                simple example. Lets assume the loss is <span
+                class="math inline">L(\phi) = \phi_1^2, \phi_1 \in
+                \mathbb{R}</span>. Lets start with <span
+                class="math inline">\phi_1 = 2</span> at <span
+                class="math inline">t = 1</span> Plotting the graph
+                results in:</p>
+                <figure>
+                <img src="images/gradient_with_no_learning_rate.png"
+                style="width:70.0%"
+                alt="The green lines represent the movement of the black point, despite iterating 6 times, it oscillates between -2 and 2. This happens when there is no learning rate hyperparameter. Experiment around the learning rate, the number of iterations and the starting parameter here: https://www.desmos.com/calculator/4rt5cbmvrh If you are bored of 2D, why not take it up a notch and increase dimensions, : https://www.desmos.com/3d/cgyqstt25w " />
+                <figcaption aria-hidden="true">The green lines represent
+                the movement of the black point, despite iterating 6
+                times, it oscillates between -2 and 2. This happens when
+                there is no <em>learning rate</em> hyperparameter.
+                Experiment around the learning rate, the number of
+                iterations and the starting parameter here: <a
+                href="https://www.desmos.com/calculator/4rt5cbmvrh"
+                class="uri">https://www.desmos.com/calculator/4rt5cbmvrh</a><a
+                href="#fn2" class="footnote-ref" id="fnref2"
+                role="doc-noteref"><sup>2</sup></a> If you are bored of
+                2D, why not take it up a notch and increase dimensions,
+                : <a href="https://www.desmos.com/3d/cgyqstt25w"
+                class="uri">https://www.desmos.com/3d/cgyqstt25w</a> <a
+                href="#fn3" class="footnote-ref" id="fnref3"
+                role="doc-noteref"><sup>3</sup></a></figcaption>
+                </figure>
+                <p>The oscillation happens because of the size of the
+                partial derivative. While it tells us of the direction,
+                the magnitude it carries might move it further away from
+                the minimum. Hence we need to multiply it by a value
+                between 1 and 0. Said parameter is called the
+                <em>learning rate</em>.</p>
+                <p>We can redefine the gradient descent as follows:</p>
+                <p><span class="math display">\phi_{t+1} \to \phi_t -
+                \alpha \cdot \frac{\partial L}{\partial
+                \phi_t}</span></p>
+                <p>Where <span class="math inline">\alpha</span> is the
+                <em>learning rate</em> hyper parameter.</p>
+                <p>Of course there are problems with that approach.
+                Lower the learning rate too much, then the function may
+                never be able to jump over a local minimum to get to the
+                actual global minimum. One would also need more
+                iterations to get to a lower minimum value with a lower
+                learning rate value.</p>
+                <figure>
+                <img
+                src="images/example%20of%20converging%20to%20a%20local%20minimum.png"
+                style="width:60.0%"
+                alt="Because the gradient converges to zero as it approaches the local minimum, it would never reach the global minimum, even given infinite number of iterations." />
+                <figcaption aria-hidden="true">Because the gradient
+                converges to zero as it approaches the local minimum, it
+                would never reach the global minimum, even given
+                infinite number of iterations.</figcaption>
+                </figure>
+                <p>There are also <em>saddle points</em>, in which case
+                the loss landscape (in a multi dimensional scale), is
+                flat enough to have it’s gradient become zero (or closer
+                to one). Which makes it impossible for the gradient
+                descent to meaningfully converge to a minimum point. Of
+                course, there are also other complexities of the
+                optimization we would need to consider. For instance for
+                our case, since we have 15,000 parameters, it would mean
+                that we would need to find a global minimum on a loss
+                landscape with a function found on 15,001 dimensions.
+                Imagining the interecate details of 15,001 dimensional
+                function is hard, I barely can understand 3 dimensional
+                functions let alone that.</p>
+                <p>To solve some of the problems crude Gradient descent
+                harbors, one can make use of <em>stochastic</em>
+                gradient descent. Where instead of computing the entire
+                loss function’s partial derivative <span
+                class="math inline">\frac{\partial L}{\partial
+                \phi_t}</span>, we compute a smaller randomly sampled
+                batch <span class="math inline">\frac{\partial
+                l}{\partial \phi_t}</span> where <span
+                class="math inline">l(\phi) = \sum_{i=1}^{N_b}
+                l_i</span>. <span class="math inline">l_i</span> is the
+                loss function sampled at <span
+                class="math inline">i</span> and <span
+                class="math inline">i \in \{1, 2, \ldots N_b\}, N_b &lt;
+                N</span>, Where N is the size of the entire dataset.</p>
+                <p>The interesting thing about SGD is that by computing
+                the gradients at a smaller batch, we are basically
+                evaluating the gradients at another slightly different
+                loss landscape (since the loss landscape depends on the
+                dataset <span class="math inline">I</span>). and while
+                it acts randomly on the real entire loss landscape, said
+                stochastic nature will hopefully push it out of saddle
+                points and local minimum.</p>
+                <p>It also has the added bonus of using less compute
+                than using the entire sample as training.</p>
+                <table>
+                <caption>Comparison of gradient descent methods on a
+                Gabor model. (a) Vanilla GD gets stuck in a local
+                minimum. (b) SGD’s noise helps escape local minima. You
+                dear reader can test this further on : <a
+                href="https://gist.github.com/AquaCoder0010/3322f78efcac0fe4c1a6b49b65f9688e"
+                class="uri">https://gist.github.com/AquaCoder0010/3322f78efcac0fe4c1a6b49b65f9688e</a></caption>
+                <colgroup>
+                <col style="width: 50%" />
+                <col style="width: 50%" />
+                </colgroup>
+                <thead>
+                <tr class="header">
+                <th style="text-align: center;"><img
+                src="images/vanilla-GD.png" style="width:100.0%" /></th>
+                <th style="text-align: center;"><img
+                src="images/SGD-Image.png" style="width:100.0%" /></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="odd">
+                <td style="text-align: center;">(a) Vanilla Gradient
+                Descent</td>
+                <td style="text-align: center;">(b) Stochastic Gradient
+                Descent</td>
+                </tr>
+                </tbody>
+                </table>
+                <p>There are also techniques that makes use of the past
+                gradient’s <em>momentum</em> as a means of moving it
+                further to a minimum value. However I will not be using
+                one, it is a topic I will explore deeply on its own. <a
+                href="#fn4" class="footnote-ref" id="fnref4"
+                role="doc-noteref"><sup>4</sup></a></p>
+                <h1 id="actually-finding-the-gradients">Actually finding
+                the Gradients</h1>
+                <p>Our goal is to find the partial derivatives of <span
+                class="math inline">\left\{\frac{\partial l_i}{\partial
+                W_k}, \frac{\partial l_i}{\partial B_k}\right\}</span>
+                for <span class="math inline">k \in \{0, 1, 2\}</span>
+                and through these gradients to we hope to improve the
+                model.</p>
+                <p>I implore you to write the entire function on a piece
+                of paper and compute the partial derivatives of all of
+                the parameters (I tried it, was a horrible experience :(
+                don’t do this pls). However, since the entire function
+                has a similar structure, it is easier to make use of the
+                <em>chain rule</em> to compute the required
+                gradients.</p>
+                <p>Of course in order to do that, lets return back to
+                the normal feed forward formula:</p>
+                <p><span class="math display">f_0 = W_0 X_0 + B_0</span>
+                <span class="math display">h_1 = a(f_0)</span> <span
+                class="math display">f_1 = W_1 h_1 + B_1</span> <span
+                class="math display">h_2 = a(f_1)</span> <span
+                class="math display">f_2 = W_2 h_2 + B_2</span></p>
+                <p>with the loss function as:</p>
+                <p><span class="math display">L = -\sum_{p=1}^N
+                \log(\operatorname{softmax}_{y_p}(f_2))</span></p>
+                <p>We can reformulate this loss function as follows:</p>
+                <p><span class="math display">L = \sum_{p=1}^N l_p,
+                \quad \text{where } l_p =
+                -\log(\operatorname{softmax}_{y_p}(f_2)) =
+                -\log\left(\frac{e^{f_{2,y_p}}}{\sum_{k&#39;=1}^K
+                e^{f_{2,k&#39;}}}\right)</span></p>
+                <p>Assuming that log is the natural logarithm <a
+                href="#fn5" class="footnote-ref" id="fnref5"
+                role="doc-noteref"><sup>5</sup></a>:</p>
+                <p><span class="math display">l_p = -f_{2,y_p} +
+                \log\left(\sum_{k&#39;=1}^K
+                e^{f_{2,k&#39;}}\right)</span></p>
+                <p>We do this because its easier to then make use of the
+                property of the sum derivative rule <span
+                class="citation" data-cites="sumderivative">(<a
+                href="#ref-sumderivative"
+                role="doc-biblioref">Wikipedia, n.d.</a>)</span></p>
+                <p><span class="math display">\frac{\partial L}{\partial
+                W} = \sum_{p=1}^N \frac{\partial l_p}{\partial
+                W}</span></p>
+                <p>This is also true for <span
+                class="math inline">\frac{\partial L}{\partial
+                B}</span></p>
+                <p>In order to find the partial derivatives of the
+                parameters, our goal is to first find <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_k}</span> and <span class="math inline">\frac{\partial
+                l_p}{\partial h_k}</span> for <span
+                class="math inline">k \in \{0, 1, 2\}</span>. Assuming
+                that <span class="math inline">\frac{\partial
+                l_p}{\partial f_2}</span> is already calculated:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_2} = \frac{\partial l_p}{\partial f_2}
+                \frac{\partial f_2}{\partial h_2}</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_1} = \frac{\partial l_p}{\partial f_2}
+                \frac{\partial f_2}{\partial h_2} \frac{\partial
+                h_2}{\partial f_1}</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_1} = \frac{\partial l_p}{\partial f_2}
+                \frac{\partial f_2}{\partial h_2} \frac{\partial
+                h_2}{\partial f_1} \frac{\partial f_1}{\partial
+                h_1}</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_0} = \frac{\partial l_p}{\partial f_2}
+                \frac{\partial f_2}{\partial h_2} \frac{\partial
+                h_2}{\partial f_1} \frac{\partial f_1}{\partial h_1}
+                \frac{\partial h_1}{\partial f_0}</span></p>
+                <p>If we observe the chain rule, one can see a pattern,
+                i.e the partial derivatives of the first layers can be
+                written with respect to its subsequent layer, since we
+                are going <em>backwards</em>, we can reformulate it
+                as:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_2} = \frac{\partial l_p}{\partial f_2}
+                \frac{\partial f_2}{\partial h_2}</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_1} = \left(\frac{\partial l_p}{\partial
+                f_2} \frac{\partial f_2}{\partial h_2}\right)
+                \frac{\partial h_2}{\partial f_1} = \frac{\partial
+                l_p}{\partial h_2} \frac{\partial h_2}{\partial
+                f_1}</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_1} = \left(\frac{\partial l_p}{\partial
+                f_2} \frac{\partial f_2}{\partial h_2} \frac{\partial
+                h_2}{\partial f_1}\right) \frac{\partial f_1}{\partial
+                h_1} = \frac{\partial l_p}{\partial f_1} \frac{\partial
+                f_1}{\partial h_1}</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_0} = \left(\frac{\partial l_p}{\partial
+                f_2} \frac{\partial f_2}{\partial h_2} \frac{\partial
+                h_2}{\partial f_1} \frac{\partial f_1}{\partial
+                h_1}\right) \frac{\partial h_1}{\partial f_0} =
+                \frac{\partial l_p}{\partial h_1} \frac{\partial
+                h_1}{\partial f_0}</span></p>
+                <p>Generalizing for <span class="math inline">k \in \{0,
+                1, 2\}</span>:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_k} = \frac{\partial l_p}{\partial f_k}
+                \frac{\partial f_k}{\partial h_k} \quad \text{for } k
+                \ne 0</span> <span class="math display">\frac{\partial
+                l_p}{\partial f_k} = \frac{\partial l_p}{\partial
+                h_{k+1}} \frac{\partial h_{k+1}}{\partial f_k} \quad
+                \text{for } k \ne 2</span></p>
+                <p>Then all we need to do is to find the generalized
+                partial derivative <span
+                class="math inline">\frac{\partial f_k}{\partial
+                h_k}</span> and <span class="math inline">\frac{\partial
+                h_{k+1}}{\partial f_k}</span> Then, through <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_k}</span> we can calculate <span
+                class="math inline">\frac{\partial l_p}{\partial
+                W_k}</span> and <span class="math inline">\frac{\partial
+                l_p}{\partial B_k}</span></p>
+                <p>Of course to start the <em>back propagation</em> we
+                would need to find <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_2}</span>.</p>
+                <p>Since <span class="math inline">l_p</span> is a
+                scalar quantity, but <span
+                class="math inline">f_2</span> is a vector with elements
+                <span class="math inline">f_{2,k&#39;}</span> for <span
+                class="math inline">k&#39; \in \{1, 2, \ldots K\}</span>
+                <span class="math inline">\Rightarrow</span> <span
+                class="math inline">\frac{\partial l_i}{\partial
+                f_2}</span> is a <em>jacobian</em> matrix with order 1xK
+                or Kx1. A <em>jacobian</em> matrix is the matrix that
+                contains all of the partial derivatives of the two
+                objects. If it is a matrix with size 1xK, it implies
+                that the matrix containing the partial derivatives are
+                denoted through <em>numerator</em> notation. However if
+                it is written through the latter. then it implies that
+                the form is written through <em>denominator</em>
+                notation. I will be using the <em>denominator</em>
+                notation but might change my mind cause I’m a dumbass <a
+                href="#fn6" class="footnote-ref" id="fnref6"
+                role="doc-noteref"><sup>6</sup></a>.</p>
+                <p>Then: <span class="math inline">\frac{\partial
+                l_p}{\partial f_2} := \begin{bmatrix} \frac{\partial
+                l_p}{\partial f_{2,1}} \\ \frac{\partial l_p}{\partial
+                f_{2,2}} \\ \vdots \\ \frac{\partial l_p}{\partial
+                f_{2,K}} \end{bmatrix}</span></p>
+                <p>In order to get the entire value of the partial
+                derivative, we need to evaluate each of it’s elements.
+                For instance, what does it mean to evaluate say, <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_{2,1}}</span> ? Well, it means evaluating the
+                expression of the loss function by treating the <span
+                class="math inline">f_{2,1}</span> as the unknown
+                variable intended to be differentiated and treating the
+                rest of the variables as mere constants. Think of it as
+                slicing the function <span
+                class="math inline">l_i[f_{2,1}, f_{2,2}, f_{2,3},
+                \ldots f_{2,K}]</span> on points <span
+                class="math inline">(f_{2,2}, f_{2,3}, \ldots
+                f_{2,k})</span> on a multi-dimensional space. Thereby
+                changing the loss function to a simple expression as
+                <span class="math inline">l_i[f_{2,1}]</span>.</p>
+                <p>Lets start by solving for <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_{2,k}}</span>, Since <span
+                class="math inline">y_p</span> and <span
+                class="math inline">k \in \{1,2, \ldots K\}</span>,
+                <span class="math inline">f_{2,k}</span> can either be
+                <span class="math inline">f_{2,y_p}</span> or not, hence
+                we evaluate the expression <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_{2,k}}</span> by assuming both cases</p>
+                <p><span class="math display">\text{if } k \ne y_p
+                \Rightarrow \frac{\partial l_p}{\partial f_{2,k}} =
+                \frac{\partial}{\partial f_{2,k}} \left(-f_{2,y_p} +
+                \log \sum_{k&#39;=1}^K
+                e^{f_{2,k&#39;}}\right)</span></p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                l_p}{\partial f_{2,k}} = \frac{\partial}{\partial
+                f_{2,k}} \left(\log \sum_{k&#39;=1}^K
+                e^{f_{2,k&#39;}}\right) =
+                \frac{e^{f_{2,k}}}{\sum_{k&#39;=1}^K e^{f_{2,k&#39;}}} =
+                \operatorname{softmax}_k(f_2)</span></p>
+                <p><span class="math display">\text{if } k = y_p
+                \Rightarrow \frac{\partial l_p}{\partial f_{2,1}} =
+                \frac{\partial}{\partial f_{2,k}} \left(-f_{2,y_p} +
+                \log \sum_{k&#39;=1}^K
+                e^{f_{2,k&#39;}}\right)</span></p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                l_p}{\partial f_{2,k}} = -1 + \frac{\partial}{\partial
+                f_{2,k}} \left(\log \sum_{k&#39;=1}^K
+                e^{f_{2,k&#39;}}\right) =
+                \frac{e^{f_{2,k}}}{\sum_{k&#39;=0}^K e^{f_{2,k&#39;}}} -
+                1 = \operatorname{softmax}_k(f_2) - 1</span></p>
+                <p>This expression can be further simplified by
+                generalizing for <span
+                class="math inline">\frac{\partial l_i}{\partial
+                f_{2,k}}</span> for all k as :</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_{2,k}} = \operatorname{softmax}_k(f_2) -
+                \delta_{k,y_p}</span></p>
+                <p>Where <span class="math inline">\delta_{i,j}</span>
+                is called the <em>Kronecker delta</em> and is defined
+                as:</p>
+                <p><span class="math display">\delta_{i,j} =
+                \begin{cases} 0 &amp; \text{if } i \ne j \\ 1 &amp;
+                \text{if } i = j \end{cases}</span></p>
+                <p>We can then make use of <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_2}</span> to find <span
+                class="math inline">\frac{\partial l_p}{\partial
+                h_2}</span>:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_2} = \frac{\partial l_p}{\partial f_2}
+                \frac{\partial f_2}{\partial h_2} \quad \text{where }
+                \frac{\partial f_2}{\partial h_2} =
+                \frac{\partial}{\partial h_2} (W_2 h_2 + B_2)</span></p>
+                <p>Of course one would ask, what does it mean to take
+                the derivative of a vector with respect to a vector?
+                Since the Jacobian of said derivative must evaluate to a
+                matrix, we need to evaluate what each of the rows and
+                columns corrospond to:</p>
+                <p>Via <em>denominator notation</em>:</p>
+                <p><span class="math display">\frac{\partial
+                f_{2,j}}{\partial h_{2,i}} = \frac{\partial}{\partial
+                h_{2,i}}\left(B_j + \sum_{m=1}^M W_{2,jm}
+                h_{2,m}\right), \quad \text{where } m \text{ and } j \in
+                \{1, 2, \ldots, M\}</span></p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                f_{2,j}}{\partial h_{2,i}} = W_{2,ji}</span></p>
+                <p>When generalized for the entire matrix:</p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                f_2}{\partial h_2} = W_2^T</span></p>
+                <p>Then for <span class="math inline">h_2</span>:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_2} = \frac{\partial l_p}{\partial f_2}
+                W_2^T</span></p>
+                <p>Generalizing for all <span class="math inline">k \in
+                \{0, 1, 2\}</span>, where <span class="math inline">k
+                \ne 0</span>:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial h_k} = \frac{\partial l_p}{\partial f_k}
+                W_k^T</span></p>
+                <p>Now solving for <span
+                class="math inline">\frac{\partial l_p}{\partial
+                f_k}</span>, we need to calculate <span
+                class="math inline">\frac{\partial h_{k+1}}{\partial
+                f_k}</span>, Recall that:</p>
+                <p><span class="math display">h_{k+1} = a(f_k)</span>
+                <span class="math display">\Rightarrow \frac{\partial
+                h_{k+1}}{\partial f_k} = \frac{\partial}{\partial f_k}
+                (a(f_k))</span></p>
+                <p>Recall that the function <span
+                class="math inline">a(\mathbf{x})</span> for any vector
+                input <span class="math inline">\mathbf{x}</span> is
+                equivalent to computing <span
+                class="math inline">\max(x_i, 0)\ \forall i, \text{
+                where } i \in \{1, 2, \ldots |\mathbf{x}|\}</span> <a
+                href="#fn7" class="footnote-ref" id="fnref7"
+                role="doc-noteref"><sup>7</sup></a>. Or in simpler
+                terms, every corresponding element becomes zero if it is
+                negative, else it doesn’t change. In order to evaluate
+                the Jacobian matrix of said derivative, let start by
+                defining <span class="math inline">a(f_k)</span> as
+                <span class="math inline">Q</span></p>
+                <p><span class="math display">\Rightarrow
+                \frac{\partial}{\partial f_k} a(f_k) = \frac{\partial
+                Q}{\partial f_k}</span></p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                Q_j}{\partial f_{k,i}} = \frac{\partial}{\partial
+                f_{k,i}} \left(\max(f_{k,i}, 0)\right)</span></p>
+                <p><span class="math inline">\frac{\partial}{\partial
+                f_{k,i}}(\max(f_{k,i}, 0))</span> is 1 if <span
+                class="math inline">f_{k,i} &gt; 0</span> else it is 0,
+                Therefore:</p>
+                <p><span class="math display">\frac{\partial
+                Q_j}{\partial f_{k,i}} = S(f_{k,i}, 0)</span></p>
+                <p>where:</p>
+                <p><span class="math display">S(a, b) = \begin{cases} 1
+                &amp; \text{if } a &gt; b \\ 0 &amp; \text{else}
+                \end{cases}</span></p>
+                <p>Meaning for cases where <span class="math inline">i
+                \ne j</span>:</p>
+                <p><span class="math display">\frac{\partial
+                Q_j}{\partial f_{k,i}} = 0</span></p>
+                <p>Therefore when writing the entire Jacobian:</p>
+                <p><span class="math display">\frac{\partial Q}{\partial
+                f_k} = \begin{bmatrix}
+                \frac{\partial Q_1}{\partial f_{k,1}} &amp;
+                \frac{\partial Q_2}{\partial f_{k,1}} &amp; \cdots &amp;
+                \frac{\partial Q_K}{\partial f_{k,1}} \\
+                \frac{\partial Q_1}{\partial f_{k,2}} &amp;
+                \frac{\partial Q_2}{\partial f_{k,2}} &amp; \dots &amp;
+                \frac{\partial Q_K}{\partial f_{k,2}} \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \frac{\partial Q_1}{\partial f_{k,K}} &amp;
+                \frac{\partial Q_2}{\partial f_{k,K}} &amp; \dots &amp;
+                \frac{\partial Q_K}{\partial f_{k,K}}
+                \end{bmatrix} = \begin{bmatrix}
+                S(f_{k,1}) &amp; 0 &amp; \dots &amp; 0 \\
+                0 &amp; S(f_{k,2}) &amp; \dots &amp; 0 \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                0 &amp; 0 &amp; \dots &amp; S(f_{k,K})
+                \end{bmatrix} = \mathbb{I}_{|f_k|} \cdot
+                S(f_k)</span></p>
+                <p><span class="math inline">\mathbb{I}_{|f_k|}</span>
+                is the identity matrix with the size equivalent to the
+                vector <span class="math inline">f_k</span> and <span
+                class="math inline">S(f_k)</span> is a vector where the
+                function <span class="math inline">S</span> is applied
+                to it <em>element wise</em>. Since <span
+                class="math inline">\frac{\partial Q}{\partial
+                f_k}</span> is equivalent to <span
+                class="math inline">\frac{\partial h_{k+1}}{\partial
+                f_k}</span>, the above matrix formulation is equivalent
+                and therefore what we need.</p>
+                <p>Now after getting the required partial derivatives,
+                we make use of <span class="math inline">\frac{\partial
+                l_p}{\partial f_k}</span> to get <span
+                class="math inline">\frac{\partial l_p}{\partial
+                W_k}</span> and <span class="math inline">\frac{\partial
+                l_p}{\partial B_k}</span>.</p>
+                <p>Lets start by finding <span
+                class="math inline">\frac{\partial l_p}{\partial
+                W_k}</span>, Since:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial W_k} = \frac{\partial l_p}{\partial f_k}
+                \frac{\partial f_k}{\partial W_k}</span></p>
+                <p>We need to find <span
+                class="math inline">\frac{\partial f_k}{\partial
+                W_k}</span>, of course the raw Jacobian of said
+                derivative isn’t a matrix anymore but rather a tensor.
+                However, the nature of the derivative changes when we
+                make use of the chain rule, because in the end, the
+                partial derivative <span
+                class="math inline">\frac{\partial l_p}{\partial
+                W_k}</span> is a matrix (since the loss is a scalar and
+                <span class="math inline">W_k</span> is a matrix).
+                Therefore instead of trying to compute or find a way to
+                multiply a 3 dimensional tensor with a vector, we can
+                instead define each of the values as:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial W_{k,ij}} = \frac{\partial l_p}{\partial
+                f_{k,i}} \frac{\partial f_{k,i}}{\partial
+                W_{k,ij}}</span></p>
+                <p><span class="math display">\frac{\partial
+                f_{k,i}}{\partial W_{k,ij}} = \frac{\partial}{\partial
+                W_{k,ij}} \left(B_{k,i} + \sum_o W_{k,io} h_{k,o}\right)
+                = h_{k,j}</span></p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                l_p}{\partial W_{k,ij}} = \frac{\partial l_p}{\partial
+                f_{k,i}} h_{k,j}</span></p>
+                <p><span class="math display">\Rightarrow \frac{\partial
+                l_p}{\partial W_k} = \begin{bmatrix}
+                \frac{\partial l_p}{\partial W_{k,11}} &amp;
+                \frac{\partial l_p}{\partial W_{k,12}} &amp; \dots &amp;
+                \frac{\partial l_p}{\partial W_{k,1C}} \\
+                \frac{\partial l_p}{\partial W_{k,21}} &amp;
+                \frac{\partial l_p}{\partial W_{k,22}} &amp; \dots &amp;
+                \frac{\partial l_p}{\partial W_{k,2C}} \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \frac{\partial l_p}{\partial W_{k,R1}} &amp;
+                \frac{\partial l_p}{\partial W_{k,R2}} &amp; \dots &amp;
+                \frac{\partial l_p}{\partial W_{k,RC}}
+                \end{bmatrix} = \begin{bmatrix}
+                \frac{\partial l_p}{\partial f_{k,1}} h_{k,1} &amp;
+                \frac{\partial l_p}{\partial f_{k,1}} h_{k,2} &amp;
+                \dots &amp; \frac{\partial l_p}{\partial f_{k,1}}
+                h_{k,C} \\
+                \frac{\partial l_p}{\partial f_{k,1}} h_{k,2} &amp;
+                \frac{\partial l_p}{\partial f_{k,2}} h_{k,2} &amp;
+                \dots &amp; \frac{\partial l_p}{\partial f_{k,2}}
+                h_{k,C} \\
+                \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+                \frac{\partial l_p}{\partial f_{k,R}} h_{k,1} &amp;
+                \frac{\partial l_p}{\partial f_{k,R}} h_{k,2} &amp;
+                \dots &amp; \frac{\partial l_p}{\partial f_{k,R}}
+                h_{k,C}
+                \end{bmatrix}, \quad \text{where } R = K</span></p>
+                <p>where <span class="math inline">R = K</span>, i.e the
+                size of <span class="math inline">f_k</span> and <span
+                class="math inline">C = |h_2|</span>, i.e the size of
+                <span class="math inline">h_k</span></p>
+                <p><span class="math display">\therefore \frac{\partial
+                l_p}{\partial W_k} = \begin{bmatrix} \frac{\partial
+                l_p}{\partial f_{k,1}} \\ \frac{\partial l_p}{\partial
+                f_{k,2}} \\ \vdots \\ \frac{\partial l_p}{\partial
+                f_{k,K}} \end{bmatrix} \begin{bmatrix} h_{k,1} &amp;
+                h_{k,2} &amp; \dots &amp; h_{k,C} \end{bmatrix} =
+                \frac{\partial l_p}{\partial f_k} h_k^T</span></p>
+                <p>Solving for <span class="math inline">\frac{\partial
+                l_p}{\partial B_k}</span> is albeit simpler than <span
+                class="math inline">W_k</span>:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial B_k} = \frac{\partial l_p}{\partial f_k}
+                \frac{\partial f_k}{\partial B_k}</span> <span
+                class="math display">\Rightarrow \frac{\partial
+                l_p}{\partial B_{k,i}} = \frac{\partial l_p}{\partial
+                f_{k,i}} \frac{\partial f_{k,i}}{\partial
+                B_{k,i}}</span> <span class="math display">\text{since }
+                \frac{\partial f_{k,i}}{\partial B_{k,i}} =
+                \frac{\partial}{\partial B_{k,i}} \left(B_{k,i} + \sum_o
+                W_{k,io} h_o\right) = 1</span> <span
+                class="math display">\Rightarrow \frac{\partial
+                l_p}{\partial B_{k,i}} = \frac{\partial l_p}{\partial
+                f_{k,i}}</span> <span class="math display">\therefore
+                \frac{\partial l_p}{\partial B_k} = \frac{\partial
+                l_p}{\partial f_k}</span></p>
+                <p>Phew that was a lot of partial derivatives, I need to
+                puke <a href="#fn8" class="footnote-ref" id="fnref8"
+                role="doc-noteref"><sup>8</sup></a>, but if you skimmed
+                past the derivations to find the final answer, we can
+                reformulate the entire back propagation for our model
+                as:</p>
+                <p>at <span class="math inline">k = 2</span>:</p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_{2,o}} = \operatorname{softmax}_o(f_2) -
+                \delta_{o,y_p} \quad \forall o \in \{1, 2, \ldots,
+                K\}</span> <span class="math display">\frac{\partial
+                l_p}{\partial W_2} = \frac{\partial l_p}{\partial f_2}
+                h_2^T</span> <span class="math display">\frac{\partial
+                l_p}{\partial B_2} = \frac{\partial l_p}{\partial
+                f_2}</span> <span class="math display">\frac{\partial
+                l_p}{\partial h_2} = \frac{\partial l_p}{\partial f_2}
+                W_2^T</span></p>
+                <p>at <span class="math inline">k = 1</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_1} = \frac{\partial l_p}{\partial h_2}
+                \left(\mathbb{I}_{|f_1|} \cdot S(f_1)\right)</span>
+                <span class="math display">\frac{\partial l_p}{\partial
+                W_1} = \frac{\partial l_p}{\partial f_1} h_1^T</span>
+                <span class="math display">\frac{\partial l_p}{\partial
+                B_1} = \frac{\partial l_p}{\partial f_1}</span> <span
+                class="math display">\frac{\partial l_p}{\partial h_1} =
+                \frac{\partial l_p}{\partial f_1} W_1^T</span></p>
+                <p>at <span class="math inline">k = 0</span></p>
+                <p><span class="math display">\frac{\partial
+                l_p}{\partial f_0} = \frac{\partial l_p}{\partial h_1}
+                \left(\mathbb{I}_{|f_0|} \cdot S(f_0)\right)</span>
+                <span class="math display">\frac{\partial l_p}{\partial
+                W_0} = \frac{\partial l_p}{\partial f_0} x_p^T</span>
+                <span class="math display">\frac{\partial l_p}{\partial
+                B_0} = \frac{\partial l_p}{\partial f_0}</span></p>
+                <p>Now that we do have a way to calculate our gradients
+                for the model, we can use it to train the model.</p>
+                <h1 id="implementation">Implementation</h1>
+                <p>The entire source code for the implementation can be
+                found here <span class="citation"
+                data-cites="mnist1d-implementation">(<a
+                href="#ref-mnist1d-implementation"
+                role="doc-biblioref">AquaCoder0010 2026</a>)</span>. The
+                following is the specific code block taken from the
+                train.py that implements the training.</p>
+                <div class="sourceCode" id="cb2"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> loss <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mnist1d.data <span class="im">import</span> make_dataset, get_dataset_args</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># the data</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>defaults <span class="op">=</span> get_dataset_args()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> make_dataset(defaults)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>x, y, t <span class="op">=</span> data[<span class="st">&#39;x&#39;</span>], data[<span class="st">&#39;y&#39;</span>], data[<span class="st">&#39;t&#39;</span>]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># the model</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>mnist1d_model <span class="op">=</span> [</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    Linear(<span class="dv">40</span>, <span class="dv">100</span>), </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ReLU(), </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    Linear(<span class="dv">100</span>, <span class="dv">100</span>), </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    ReLU(),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    Linear(<span class="dv">100</span>, <span class="dv">10</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> MultiClassCrossEntropyLoss(<span class="dv">10</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>l_r <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this is a crude implementation of the shuffle (i.e if the batch size is</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># not divisible it won&#39;t work, but it is night time and I am lazy to find </span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># another solution sooo)</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    indices <span class="op">=</span> np.random.choice(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      x.shape[<span class="dv">0</span>], </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      x.shape[<span class="dv">0</span>], </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      replace<span class="op">=</span><span class="va">False</span>).reshape(<span class="op">-</span><span class="dv">1</span>, batch_size)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx, inds <span class="kw">in</span> <span class="bu">enumerate</span>(indices):</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        x_b, y_b <span class="op">=</span> x[inds], y[inds]</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> forward(x_b, mnist1d_model)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        probs <span class="op">=</span> criterion.softmax(out)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        criterion.backward(mnist1d_model, x_b, y_b, l_r)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> idx <span class="op">%</span> <span class="dv">10</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> criterion.get_loss(mnist1d_model, x_b, y_b)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;Batch idx : </span><span class="sc">{</span>idx<span class="sc">}</span><span class="ss">, Loss: </span><span class="sc">{</span>loss<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> criterion.get_loss(mnist1d_model, x, y)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;=&quot;</span><span class="op">*</span><span class="dv">10</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Finished training epoch : </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Current Loss: </span><span class="sc">{</span>loss<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+                <p>The <code>forward</code> and <code>backward</code>
+                functions implement the feed forward and backward
+                algorithms respectively. They are implemented as
+                follows:</p>
+                <div class="sourceCode" id="cb3"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># forward feed</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> forward(x, model_layers):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> <span class="bu">all</span>(<span class="bu">isinstance</span>(layer, (Linear, ReLU)) <span class="cf">for</span> layer <span class="kw">in</span> model_layers)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> x</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer <span class="kw">in</span> model_layers:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> layer.forward(out)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span></code></pre></div>
+                <div class="sourceCode" id="cb4"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> backward(<span class="va">self</span>, model, X, y, learning_rate<span class="op">=</span><span class="fl">0.3</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># this part could have just been abstracted by the forward function, oh </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># well ¯\_(◕‿◕)_/¯</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> X</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer <span class="kw">in</span> model:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> layer.forward(out)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">#</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This part implements the first partial derivative we need to compute at </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># k = 2</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> <span class="va">self</span>.softmax(out)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> X.shape[<span class="dv">0</span>]</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> probs.copy()</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    grad[np.arange(N), y] <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">#</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the reason we divide by N is because when we sum up the gradients, we </span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sum up 16 of the gradients for one of the weights and biases. Hence the</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># weight will increase by a factor of 16 * learning_rate. Hence we take</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the average.</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">/=</span> N</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> layer <span class="kw">in</span> <span class="bu">reversed</span>(model):</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        grad <span class="op">=</span> layer.backward(grad, learning_rate)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grad</span></code></pre></div>
+                <div class="sourceCode" id="cb5"><pre
+                class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Linear:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> <span class="bu">isinstance</span>(x, np.ndarray) <span class="op">==</span> <span class="va">True</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> x.shape[<span class="dv">1</span>] <span class="op">==</span> <span class="va">self</span>.weight.shape[<span class="dv">0</span>] <span class="kw">and</span> <span class="bu">len</span>(x.shape) <span class="op">!=</span> <span class="dv">1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x_input <span class="op">=</span> x</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x <span class="op">@</span> <span class="va">self</span>.weight <span class="op">+</span> <span class="va">self</span>.bias</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> backward(<span class="va">self</span>, grad, learning_rate):</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        grad_out <span class="op">=</span> grad <span class="op">@</span> <span class="va">self</span>.weight.T</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.weight <span class="op">-=</span> (<span class="va">self</span>.x_input.T <span class="op">@</span> grad) <span class="op">*</span> learning_rate</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bias <span class="op">-=</span> np.<span class="bu">sum</span>(grad, axis<span class="op">=</span><span class="dv">0</span>, keepdims<span class="op">=</span><span class="va">True</span>) <span class="op">*</span> learning_rate</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> grad_out</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReLU:</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.x_input <span class="op">=</span> x</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.maximum(x, <span class="dv">0</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> backward(<span class="va">self</span>, gradm, learning_rate):</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> gradm <span class="op">*</span> (<span class="va">self</span>.x_input <span class="op">&gt;</span> <span class="dv">0</span>)</span></code></pre></div>
+                <p>Running the model and plotting the loss function with
+                respect to the 10 step sizes results in:</p>
+                <p><img src="images/loss_curve.png"
+                style="width:60.0%" /></p>
+                <p>Granted the training loss doesn’t tell us anything
+                about how well it <em>generalized</em> from the data.
+                However model generalization is something I will deeply
+                explore on its own. <a href="#fn9" class="footnote-ref"
+                id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+                <p>Not every good at ending stuff so I am just going to
+                end this abruptly.</p>
+                <h1 class="unnumbered" id="references">References</h1>
+                <div id="refs"
+                class="references csl-bib-body hanging-indent"
+                role="list">
+                <div id="ref-mnist1d-implementation" class="csl-entry"
+                role="listitem">
+                AquaCoder0010. 2026.
+                <span>“<span>MNIST-1D</span>.”</span> <a
+                href="https://github.com/AquaCoder0010/MNIST-1D">https://github.com/AquaCoder0010/MNIST-1D</a>.
+                </div>
+                <div id="ref-wikipedia_abel_ruffini" class="csl-entry"
+                role="listitem">
+                contributors, Wikipedia. n.d.
+                <span>“Abel–Ruffini-Theorem.”</span> <a
+                href="https://en.wikipedia.org/wiki/Abel%E2%80%93Ruffini_theorem">https://en.wikipedia.org/wiki/Abel%E2%80%93Ruffini_theorem</a>.
+                </div>
+                <div id="ref-greydanus2024scaling" class="csl-entry"
+                role="listitem">
+                Greydanus, Sam, and Dmitry Kobak. 2024. <span>“Scaling
+                down Deep Learning with MNIST-1D.”</span> <em>ICML</em>.
+                </div>
+                <div id="ref-linear_regression_closed_form"
+                class="csl-entry" role="listitem">
+                Hatcher, Margo. 2022. <span>“Closed-Form Solution to
+                Linear Regression.”</span> <em>Towards Data
+                Science</em>, May. <a
+                href="https://towardsdatascience.com/closed-form-solution-to-linear-regression-e1fe14c1cbef/">https://towardsdatascience.com/closed-form-solution-to-linear-regression-e1fe14c1cbef/</a>.
+                </div>
+                <div id="ref-mnist" class="csl-entry" role="listitem">
+                LeCun, Yann, Corinna Cortes, and Christopher J. C.
+                Burges. n.d. <span>“The MNIST Handwritten Digit
+                Database.”</span> <a
+                href="https://web.archive.org/web/20200430193701/http://yann.lecun.com/exdb/mnist/">https://web.archive.org/web/20200430193701/http://yann.lecun.com/exdb/mnist/</a>.
+                </div>
+                <div id="ref-sumderivative" class="csl-entry"
+                role="listitem">
+                Wikipedia. n.d. <span>“Linearity of
+                Differentiation.”</span> <a
+                href="https://en.wikipedia.org/wiki/Differentiation_rules#Linearity_of_differentiation"
+                class="uri">https://en.wikipedia.org/wiki/Differentiation_rules#Linearity_of_differentiation</a>.
+                </div>
+                </div>
+                <aside id="footnotes"
+                class="footnotes footnotes-end-of-document"
+                role="doc-endnotes">
+                <hr />
+                <ol>
+                <li id="fn1"><p>isn’t it funny how if you change the
+                abbreviation of i.i.d to either identical and
+                independently distributed or independent and identically
+                distributed, they both represent the same thing. So in a
+                sense both abbreviations are i.i.d. Haha … (I need
+                friends.)<a href="#fnref1" class="footnote-back"
+                role="doc-backlink">↩︎</a></p></li>
+                <li id="fn2"><p>I love desmos.<a href="#fnref2"
+                class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+                <li id="fn3"><p>I love <span
+                class="math inline">\operatorname{desmos}^{3D}</span>.<a
+                href="#fnref3" class="footnote-back"
+                role="doc-backlink">↩︎</a></p></li>
+                <li id="fn4"><p>no this is not me being lazy<a
+                href="#fnref4" class="footnote-back"
+                role="doc-backlink">↩︎</a></p></li>
+                <li id="fn5"><p>Note that we can take any type of
+                logarithm, since it has no effect on the exact minimum
+                value, we take the natural log to make it so that the
+                constant that comes out becomes 1. If you are weird
+                though you can make it log with the base of 67. For the
+                memes.<a href="#fnref5" class="footnote-back"
+                role="doc-backlink">↩︎</a></p></li>
+                <li id="fn6"><p>The point here is that any notation will
+                suffice, so long as we stay consistent its also worth
+                here to empathize that the <em>order</em> of the chain
+                rule depends upon the type of notation we would use.
+                Because matrices are not commutative.<a href="#fnref6"
+                class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+                <li id="fn7"><p>Note that <span
+                class="math inline">|\mathbf{x}|</span> is merely just
+                the total size of the input vector <span
+                class="math inline">\mathbf{x}</span>, mostly referred
+                to as the <em>cardinality</em> of <span
+                class="math inline">\mathbf{x}</span>.<a href="#fnref7"
+                class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+                <li id="fn8"><p>for reference I didn’t puke, it is
+                called a joke<a href="#fnref8" class="footnote-back"
+                role="doc-backlink">↩︎</a></p></li>
+                <li id="fn9"><p>okay this time I am kinda lazy.<a
+                href="#fnref9" class="footnote-back"
+                role="doc-backlink">↩︎</a></p></li>
+                </ol>
+                </aside>
+              </td>
+            </tr>
+          </tbody></table>
+
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+              <td style="padding:0px">
+                <br>
+                <p style="text-align:right;font-size:small;">
+                  <a href="../index.html">Back to the main page</a>
+                </p>
+              </td>
+            </tr>
+          </tbody></table>
+
+        </td>
+      </tr>
+    </tbody></table>
+      </body>
+</html>
