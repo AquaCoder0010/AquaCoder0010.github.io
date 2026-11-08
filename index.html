@@ -1,529 +1,196 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Beemnet Asegid — ML/AI Engineer</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-  :root {
-    --ink: #0f0f0f;
-    --muted: #6b6b6b;
-    --faint: #e8e6e0;
-    --bg: #f9f7f2;
-    --card: #ffffff;
-    --accent: #1a472a;
-    --accent-soft: #d4ede0;
-    --tag-bg: #eef7f2;
-    --tag-txt: #0f3d22;
-    --mono: 'DM Mono', monospace;
-    --serif: 'DM Serif Display', serif;
-    --sans: 'DM Sans', sans-serif;
-  }
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    <title>Your Name</title>
 
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--ink);
-    font-size: 15px;
-    line-height: 1.7;
-  }
+    <meta name="author" content="Your Name">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="images/favicon/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
 
-  /* ── NAV ── */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(249,247,242,0.92);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--faint);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 max(2rem, 5vw);
-    height: 56px;
-  }
-  nav .logo {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--accent);
-    letter-spacing: 0.04em;
-  }
-  nav ul { list-style: none; display: flex; gap: 1.75rem; }
-  nav a {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.02em;
-    transition: color 0.2s;
-  }
-  nav a:hover { color: var(--ink); }
+  </head>
 
-  /* ── SECTIONS ── */
-  section { padding: 5rem max(2rem, 5vw); max-width: 900px; margin: 0 auto; }
+  <body>
+    <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+      <tr style="padding:0px">
+        <td style="padding:0px">
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr style="padding:0px">
+              <td style="padding:2.5%;width:63%;vertical-align:middle">
+                <p class="name" style="text-align: left;">
+                  Beemnet Asegid
+                </p>
+                <!-- <p>
+                  Lorem ipsum dolor sit amet, <a href="#">consectetur adipiscing elite</a> at a placeholder institution, where I work on <a href="#">dummy topic one</a> and <a href="#">dummy topic two</a>.
+                  Duis aute irure dolor in reprehenderit in <a href="#">placeholder project A</a>, <a href="#">placeholder project B</a>, <a href="#">placeholder project C</a>, and <a href="#">placeholder project D</a>.
+                  Sed ut perspiciatis, unde omnis iste natus, at a <a href="#">placeholder university</a>, where I worked under <a href="#">Advisor Name</a>.
+                  Ut enim ad minima veniam, I received the <a href="#">Placeholder Award</a>.
+                </p> -->
+                <p>
+                  Hi! Here is where I write explanation about math concepts, AI/ML, coding and occasional commentary
+                </p>
+                <p style="text-align:center">
+                  <!-- <a href="mailto:your.name@example.com">Email</a> &nbsp;/&nbsp; -->
+                  <!-- <a href="data/YourName-CV.pdf">CV</a> &nbsp;/&nbsp;
+                  <a href="data/YourName-bio.txt">Bio</a> &nbsp;/&nbsp;
+                  <a href="#">Scholar</a> &nbsp;/&nbsp;
+                  <a href="#">Twitter</a> &nbsp;/&nbsp; -->
+                  <!-- <a href="https://github.com/AquaCoder0010">Github</a> -->
+                </p>
+              </td>
+              <td style="padding:2.5%;width:37%;max-width:37%">
+                <a href="images/profile.jpg"><img style="width:100%;max-width:100%;object-fit: cover; border-radius: 50%;" alt="profile photo" src="images/placeholder.jpg" class="hoverZoomLink"></a>
+              </td>
+            </tr>
+          </tbody></table>
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+              <tr>
+              <td style="padding:16px;width:100%;vertical-align:middle">
+                <h2>Blogs</h2>
+                <p>
+                  <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere, erat, vel aliquet, augue. Most of my research is about placeholder topic, placeholder topic, and placeholder topic. Some papers are <span class="highlight">highlighted</span>. -->
+                </p>
+              </td>
+            </tr>
+          </tbody></table>
+          <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
-  /* ── HERO ── */
-  #hero {
-    padding-top: 7rem;
-    padding-bottom: 5rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2rem;
-    align-items: start;
-  }
-  #hero .eyebrow {
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-  #hero h1 {
-    font-family: var(--serif);
-    font-size: clamp(2.6rem, 6vw, 4rem);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    margin-bottom: 1.25rem;
-  }
-  #hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
-  #hero .bio {
-    font-size: 16px;
-    color: var(--muted);
-    max-width: 520px;
-    margin-bottom: 2rem;
-    line-height: 1.8;
-  }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-  .btn {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    padding: 0.55rem 1.25rem;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: all 0.2s;
-    cursor: pointer;
-    border: none;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-  }
-  .btn-primary:hover { background: #0d3018; }
-  .btn-outline {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-  }
-  .btn-outline:hover { background: var(--accent-soft); }
+              <!-- TEMPLATE PAPER ENTRY 1: static image thumb. Copy this block per paper,
+                   change the "paper1" id and add the hover video version (see block 2) if wanted. -->
+              <!-- <tr onmouseout="paper1_stop()" onmouseover="paper1_start()" bgcolor="#ffffd0">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='paper1_thumb'>
+                      <img src='images/placeholder.svg' width=100%>
+                    </div>
+                    <img src='images/placeholder.svg' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function paper1_start() {
+                      document.getElementById('paper1_thumb').style.opacity = "1";
+                    }
 
-  .initials-badge {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: var(--accent-soft);
-    border: 2px solid var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--serif);
-    font-size: 2rem;
-    color: var(--accent);
-    flex-shrink: 0;
-  }
+                    function paper1_stop() {
+                      document.getElementById('paper1_thumb').style.opacity = "0";
+                    }
+                    paper1_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="paper1/">
+                    <span class="papertitle">A Placeholder Title for Your First Paper</span>
+                  </a>
+                  <br>
+                  <strong>Your Name</strong>,
+                  <a href="#">First Author</a>,
+                  <a href="#">Second Author</a>
+                  <br>
+                  <em>Venue</em>, 2026
+                  <br>
+                  <a href="paper1/">project page</a>
+                  /
+                  <a href="#">pdf</a>
+                  /
+                  <a href="#">arXiv</a>
+                  /
+                  <a href="#">code</a>
+                  <p></p>
+                  <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                  </p>
+                </td>
+              </tr>
+ -->
 
-  /* ── SKILLS ── */
-  .skill-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-  }
-  .skill-pill {
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 0.45rem 0.85rem;
-    border-radius: 4px;
-    background: var(--tag-bg);
-    color: var(--tag-txt);
-    border: 1px solid #c3e8d4;
-    text-align: center;
-    font-weight: 500;
-  }
+              <!-- TEMPLATE PAPER ENTRY 2: hover shows a video. Copy this block per paper,
+                   replace the unique id "paper2" everywhere, add images/paper2.mp4 and patch the jpg. -->
+              <tr onmouseout="paper2_stop()" onmouseover="paper2_start()">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <!-- <div class="two" id='paper2_image'><video width=100% height=100% muted autoplay loop>
+                      <source src="images/paper2.mp4" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video></div> -->
+                    <img src='MNIST-1D/images/mnist.png' width="160">
+                  </div>
+                  <!-- <script type="text/javascript">
+                    function paper2_start() {
+                      document.getElementById('paper2_image').style.opacity = "1";
+                    }
 
-  /* ── SECTION HEADINGS ── */
-  .section-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-  }
-  h2.section-title {
-    font-family: var(--serif);
-    font-size: 2rem;
-    font-weight: 400;
-    margin-bottom: 2.5rem;
-    line-height: 1.2;
-  }
+                    function paper2_stop() {
+                      document.getElementById('paper2_image').style.opacity = "0";
+                    }
+                    paper2_stop()
+                  </script> -->
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="MNIST-1D/">
+                    <span class="papertitle">Training a simple Neural Network on the MNIST-1D Dataset </span>
+                  </a>
+                  <p>
+                    A paper detailing how I implemented training of a neural network on the MNIST-1D dataset, featuring derivation of the loss function , backpropagation and training
+                  </p>
+                </td>
+              </tr>
 
-  /* ── PROJECTS ── */
-  .project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 1.25rem;
-  }
-  .project-card {
-    background: var(--card);
-    border: 1px solid var(--faint);
-    border-radius: 10px;
-    padding: 1.5rem;
-    transition: border-color 0.2s, transform 0.2s;
-    display: flex;
-    flex-direction: column;
-  }
-  .project-card:hover {
-    border-color: #a0cbb5;
-    transform: translateY(-2px);
-  }
-  .project-card .proj-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-  }
-  .lang-badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-weight: 500;
-  }
-  .lang-cpp { background: #dce8f7; color: #1a3d6b; }
-  .lang-python { background: #fdf1d0; color: #6b4c00; }
-  .proj-stars {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .project-card h3 {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    color: var(--ink);
-  }
-  .project-card p {
-    font-size: 14px;
-    color: var(--muted);
-    flex: 1;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-  }
-  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
-  .tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    background: var(--tag-bg);
-    color: var(--tag-txt);
-    border-radius: 3px;
-    font-family: var(--mono);
-  }
-  .proj-link {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.04em;
-    align-self: flex-start;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s;
-  }
-  .proj-link:hover { border-bottom-color: var(--accent); }
 
-  /* ── CV / EXPERIENCE ── */
-  .cv-block {
-    border-left: 2px solid var(--faint);
-    padding-left: 1.5rem;
-    position: relative;
-    margin-bottom: 2rem;
-  }
-  .cv-block::before {
-    content: '';
-    position: absolute;
-    left: -5px;
-    top: 6px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  .cv-block .cv-when {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    margin-bottom: 0.25rem;
-  }
-  .cv-block h3 {
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 0.15rem;
-  }
-  .cv-block .org {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-  .cv-block ul {
-    list-style: none;
-    font-size: 14px;
-    color: var(--muted);
-  }
-  .cv-block ul li::before {
-    content: '→ ';
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 11px;
-  }
+              <!-- TEMPLATE PAPER ENTRY 3: minimal, no image and no script. Good for short teasers. -->
+              <!-- <tr onmouseout="paper3_stop()" onmouseover="paper3_start()" bgcolor="#ffffd0">
+                <td style="padding:16px;width:20%;vertical-align:middle">
+                  <div class="one">
+                    <div class="two" id='paper3_thumb'>
+                      <img src='images/placeholder.svg' width=100%>
+                    </div>
+                    <img src='images/placeholder.svg' width="160">
+                  </div>
+                  <script type="text/javascript">
+                    function paper3_start() {
+                      document.getElementById('paper3_thumb').style.opacity = "1";
+                    }
 
-  /* ── DIVIDER ── */
-  hr.divider {
-    border: none;
-    border-top: 1px solid var(--faint);
-    margin: 0 max(2rem, 5vw);
-  }
+                    function paper3_stop() {
+                      document.getElementById('paper3_thumb').style.opacity = "0";
+                    }
+                    paper3_stop()
+                  </script>
+                </td>
+                <td style="padding:8px;width:80%;vertical-align:middle">
+                  <a href="#">
+                    <span class="papertitle">A Placeholder Title for Your Third Paper</span>
+                  </a>
+                  <br>
+                  <strong>Your Name</strong>,
+                  <a href="#">First Author</a>,
+                  <a href="#">Second Author</a>, 
+                  <a href="#">Third Author</a>
+                  <br>
+                  <em>Venue</em>, 2024
+                  <br>
+                  <a href="#">pdf</a>
+                  <p></p>
+                  <p>
+                  Cras justo odio, dapibus ac facilisis in, egestas eget quam. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur, ridiculus mus.
+                  </p>
+                </td>
+              </tr> -->
 
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 3rem 2rem;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    border-top: 1px solid var(--faint);
-  }
+          </tbody></table>
 
-  /* ── PRINT ── */
-  @media print {
-    nav { display: none; }
-    #hero, section { padding: 1.5rem 0; }
-    .project-card:hover { transform: none; }
-  }
-
-  @media (max-width: 600px) {
-    #hero { grid-template-columns: 1fr; }
-    .initials-badge { display: none; }
-    .project-grid { grid-template-columns: 1fr; }
-  }
-</style>
-</head>
-<body>
-
-<nav>
-  <span class="logo">BA / portfolio</span>
-  <ul>
-    <li><a href="#projects">Projects</a></li>
-  </ul>
-</nav>
-
-<!-- ── HERO ── -->
-<section id="hero">
-  <div>
-    <p class="eyebrow">ML / AI Engineer &nbsp;·&nbsp; Systems Programmer</p>
-    <h1>Beemnet<br><em>Asegid</em></h1>
-    <p class="bio">
-      Programmer with a passion for understanding and building software from the ground up.
-      I work across machine learning, computer vision, and systems programming.
-    </p>
-  </div>
-  <div class="initials-badge">BA</div>
-</section>
-
-<hr class="divider"/>
-
-<!-- ── SKILLS ── -->
-<section id="about">
-  <p class="section-label">Technical skills</p>
-  <h2 class="section-title">Languages &amp; tools</h2>
-  <div class="skill-grid">
-    <div class="skill-pill">Python</div>
-    <div class="skill-pill">C++</div>
-    <div class="skill-pill">C</div>
-    <div class="skill-pill">PyTorch</div>
-    <div class="skill-pill">NumPy</div>
-    <div class="skill-pill">Pandas</div>
-    <div class="skill-pill">Matplotlib</div>
-    <div class="skill-pill">OpenCV</div>
-    <div class="skill-pill">SFML</div>
-    <div class="skill-pill">scikit-learn</div>
-    <div class="skill-pill">Git</div>
-    <div class="skill-pill">pip / PyPI</div>
-  </div>
-</section>
-
-<hr class="divider"/>
-
-<!-- ── PROJECTS ── -->
-<section id="projects">
-  <p class="section-label">Selected work</p>
-  <h2 class="section-title">Projects</h2>
-  <div class="project-grid">
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-python">Python</span>
-      </div>
-      <h3>SABV — Signature Agnostic Binary Visualizer</h3>
-      <p>
-        Converts arbitrary PE/binary files into structured image representations for malware analysis.
-        Integrates a fuzzy-inference system (FIS) inspired by the SAGMAD methodology,
-        with configurable sampling, resolution, and multithreading. Published on PyPI.
-      </p>
-      <div class="tag-row">
-        <span class="tag">binary analysis</span>
-        <span class="tag">fuzzy inference</span>
-        <span class="tag">computer vision</span>
-        <span class="tag">PyPI package</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/SABV" class="proj-link" target="_blank">github.com/AquaCoder0010/SABV →</a>
-    </div>
-
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-cpp">C++</span>
-      </div>
-      <h3>OPAL-OMR — Optical Mark Recognition</h3>
-      <p>
-        C++ OMR software built to evaluate 12th-grade model examination sheets.
-        Processes scanned answer sheets, detects filled bubbles, and scores responses automatically.
-      </p>
-      <div class="tag-row">
-        <span class="tag">computer vision</span>
-        <span class="tag">image processing</span>
-        <span class="tag">education tech</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/OPAL-OMR" class="proj-link" target="_blank">github.com/AquaCoder0010/OPAL-OMR →</a>
-    </div>
-
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-cpp">C++</span>
-      </div>
-      <h3>ANN — Artificial Neural Network (from scratch)</h3>
-      <p>
-        A fully hand-coded neural network in C++ with no ML libraries.
-        Implements forward pass, backpropagation, and gradient descent to deeply understand
-        the mechanics behind modern deep learning.
-      </p>
-      <div class="tag-row">
-        <span class="tag">deep learning</span>
-        <span class="tag">backpropagation</span>
-        <span class="tag">systems ML</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/ANN-Artifical-Neural-network" class="proj-link" target="_blank">github.com/AquaCoder0010/ANN-... →</a>
-    </div>
-
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-python">Python</span>
-        <span class="proj-stars"></span>
-      </div>
-      <h3>Linear Regression (from scratch)</h3>
-      <p>
-        Pure-Python implementation of the linear regression algorithm, including gradient descent
-        optimization and loss tracking. Built to understand the mathematical foundations
-        of supervised learning.
-      </p>
-      <div class="tag-row">
-        <span class="tag">machine learning</span>
-        <span class="tag">gradient descent</span>
-        <span class="tag">statistics</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/Linear-regression" class="proj-link" target="_blank">github.com/AquaCoder0010/Linear-regression →</a>
-    </div>
-
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-cpp">C++</span>
-      </div>
-      <h3>Dino Game — SFML</h3>
-      <p>
-        A clone of the Chrome offline dinosaur game built in C++ with the SFML graphics library.
-        Demonstrates real-time game loop design, collision detection, and procedural obstacle generation.
-        Most starred project.
-      </p>
-      <div class="tag-row">
-        <span class="tag">game dev</span>
-        <span class="tag">SFML</span>
-        <span class="tag">real-time systems</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/Dino-Game-SFML" class="proj-link" target="_blank">github.com/AquaCoder0010/Dino-Game-SFML →</a>
-    </div>
-
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-python">Python</span>
-      </div>
-      <h3>Osage-SAMD — Signature Agnostic Malware Detection</h3>
-      <p>
-        Implements a Consistent Bidirectional GAN (CBiGAN) for unsupervised anomaly detection in malware images.
-        Trained exclusively on benign data to learn normalcy, then detects malware as reconstruction failures.
-        Uses the DikeDataset with binaries converted via SABV at 512×512 resolution.
-      </p>
-      <div class="tag-row">
-        <span class="tag">GAN</span>
-        <span class="tag">anomaly detection</span>
-        <span class="tag">malware analysis</span>
-        <span class="tag">unsupervised learning</span>
-        <span class="tag">CBiGAN</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/Osage-SAMD" class="proj-link" target="_blank">github.com/AquaCoder0010/Osage-SAMD →</a>
-    </div>
-
-    <div class="project-card">
-      <div class="proj-meta">
-        <span class="lang-badge lang-python">Python</span>
-      </div>
-      <h3>OsageLOM — ByteFormer Malware Classifier</h3>
-      <p>
-        Malware detection using a ByteFormer transformer encoder on raw byte sequences from PE executable sections
-        (.text, .code). Classifies files as malware or benign directly from binary content.
-      </p>
-      <div class="tag-row">
-        <span class="tag">transformer</span>
-        <span class="tag">ByteFormer</span>
-        <span class="tag">malware detection</span>
-        <span class="tag">PE analysis</span>
-        <span class="tag">binary classification</span>
-      </div>
-      <a href="https://github.com/AquaCoder0010/OsageLOM" class="proj-link" target="_blank">github.com/AquaCoder0010/OsageLOM →</a>
-    </div>
-
-  </div>
-</section>
-
-</section>
-
-<footer>
-  &copy; Beemnet Asegid &nbsp;·&nbsp; github.com/AquaCoder0010
-</footer>
-
-</body>
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+              <td style="padding:0px">
+                <br>
+                <p style="text-align:right;font-size:small;">
+                  This page uses the layout of <a href="https://github.com/jonbarron/jonbarron_website">a public website template</a>
+                </p>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+    </tbody></table>
+  </body>
 </html>
